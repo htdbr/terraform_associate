@@ -1,0 +1,31 @@
+pipeline {
+  agent any
+  
+  environment {
+        REPPO = "https://git.htd.local/terraform"
+        ENV= "prod"
+    }
+  tools {
+      terraform "Terraform1.1.7"
+  }
+
+  stages {
+    stage('Git Checkout') {
+      steps {
+        git credentialsId: '16**-**-**-**-**cb', url: '${REPO}'
+      }
+    }
+
+    stage('Terraform Init') {
+      steps {
+        sh label: '', script: 'terraform init -upgrade'
+      }
+    }
+    
+    stage('Terraform apply') {
+      steps {
+        sh label: '', script: 'terraform apply --auto-approve -var NAME=${ENV}'
+      }
+    }
+  }
+}
